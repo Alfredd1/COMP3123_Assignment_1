@@ -5,12 +5,12 @@ const router = express.Router();
 router
   .route('/')
   .get(employeeController.getAllEmployees)
-  .post(employeeController.createEmployee)
-  .delete(employeeController.deleteEmployee);
+  .post(employeeController.createEmployee);
 
 router
   .route('/:eid')
   .get(employeeController.getEmployee)
-  .put(employeeController.updateEmployee);
+  .put(employeeController.updateEmployee)
+  .delete(employeeController.deletedEmployee);
 
 module.exports = router;
