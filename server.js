@@ -5,8 +5,12 @@ dotenv.config({ path: `./config.env` });
 
 console.log(process.env.DATABASE_LOCAL);
 mongoose
-  .connect(process.env.DATABASE_LOCAL)
-  .then(() => console.log(`MongoDB Connected successfully.`));
+  .connect(process.env.DATABASE_LOCAL || process.env.MONGO_URL)
+  .then(() => console.log(`MongoDB Connected successfully.`))
+  .catch((err) => {
+    console.error(`MongoDB connection failed: ${err.message}`);
+    process.exit(1);
+  });
 
 const app = require('./app');
 

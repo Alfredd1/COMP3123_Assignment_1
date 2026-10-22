@@ -3,7 +3,13 @@ services:
     build: .
     ports:
       - "3001:3000"
+    # config.env supplies JWT_SECRET / JWT_EXPIRES_IN; `environment` below
+    # overrides the values that must differ inside the container.
+    env_file:
+      - config.env
     environment:
+      PORT: "3000"
+      DATABASE_LOCAL: mongodb://root:example@mongo:27017/assignment_1?authSource=admin
       MONGO_URL: mongodb://root:example@mongo:27017/assignment_1?authSource=admin
     depends_on:
       mongo:

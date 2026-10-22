@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 exports.signup = async (req, res) => {
   try {
     const newUser = await User.create({
-      name: req.body.name,
+      username: req.body.username,
       email: req.body.email,
       password: req.body.password,
     });
@@ -12,11 +12,15 @@ exports.signup = async (req, res) => {
       expiresIn: process.env.JWT_EXPIRES_IN,
     });
 
+    // Never return the password (hash) in the response.
+    const user = newUser.toObject();
+    delete user.password;
+
     res.status(201).json({
       status: 'success',
       token,
       data: {
-        user: newUser,
+        user,
       },
     });
   } catch (error) {
@@ -39,7 +43,7 @@ exports.login = async (req, res) => {
     }
     const user = await User.findOne({ email }).select('+password');
 
-    if (!user || !(await user.correctPassword(password, user.password))) {
+    if (!user || !(await user.comparePassword(password, user.password))) {
       return res.status(401).json({
         status: 'error',
         message: 'Incorrect email or password',
